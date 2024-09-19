@@ -18,11 +18,38 @@ public class Lobster extends Actor
     }
 
     /**
+     * Make the current world, the GameWonWorld!
+     */
+    public void transitionToGameLostWorld()
+    {
+        World gameLostWorld =  new  GameLostWorld();
+        Greenfoot.setWorld(gameLostWorld);
+    }
+
+    /**
+     * When the list of Worm objects in the world is empty, we win the game!
+     */
+    public boolean isGameLost()
+    {
+        World world = getWorld();
+        if (world.getObjects(Crab.class).isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
      * Act - do whatever the Lobster wants to do. This method is called whenever the 'Act' or 'Run' button gets pressed in the environment.
      */
     public void act()
     {
         moveAround();
+        eat();
+        if (isGameLost()) {
+            transitionToGameLostWorld();
+        }
     }
 
     /**
@@ -36,6 +63,44 @@ public class Lobster extends Actor
         }
         if (isAtEdge()) {
             turn(180);
+        }
+    }
+
+    /**
+     * 
+     */
+    public void eat()
+    {
+        Actor crab = getOneIntersectingObject(Crab.class);
+        if (crab != null) {
+            World world = getWorld();
+            world.removeObject(crab);
+            Greenfoot.playSound("bio.mp3");
+        }
+    }
+
+    /**
+     * 
+     */
+    public void removeObject()
+    {
+        Actor worm = getOneIntersectingObject(Worm.class);
+        if (worm != null) {
+            World world = getWorld();
+            world.removeObject(worm);
+            addLobster();
+        }
+    }
+
+    /**
+     * 
+     */
+    public void addLobster()
+    {
+        Actor worm = getOneIntersectingObject(Worm.class);
+        if (worm != null) {
+            World world = getWorld();
+            world.addObject( new  Lobster(), worm.getX(), worm.getY());
         }
     }
 }

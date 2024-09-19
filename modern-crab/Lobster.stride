@@ -18,12 +18,43 @@
         </constructor>
     </constructors>
     <methods>
+        <method access="public" type="void" type-java="void" name="transitionToGameLostWorld" enable="true">
+            <javadoc xml:space="preserve">Make the current world, the GameWonWorld!</javadoc>
+            <params/>
+            <throws/>
+            <body>
+                <variable type="World" type-java="World" name="gameLostWorld" value="new GameLostWorld()" value-java=" new GameLostWorld()" enable="true"/>
+                <call expression="Greenfoot.setWorld(gameLostWorld)" expression-java="Greenfoot.setWorld(gameLostWorld)" enable="true"/>
+            </body>
+        </method>
+        <method access="public" type="boolean" type-java="boolean" name="isGameLost" enable="true">
+            <javadoc xml:space="preserve">When the list of Worm objects in the world is empty, we win the game!</javadoc>
+            <params/>
+            <throws/>
+            <body>
+                <variable type="World" type-java="World" name="world" value="getWorld()" value-java="getWorld()" enable="true"/>
+                <if condition="world.getObjects(Crab.class).isEmpty()" condition-java="world.getObjects(Crab.class).isEmpty()" enable="true">
+                    <ifStatements>
+                        <return value="true" value-java="true" enable="true"/>
+                    </ifStatements>
+                    <else>
+                        <return value="false" value-java="false" enable="true"/>
+                    </else>
+                </if>
+            </body>
+        </method>
         <method access="public" type="void" type-java="void" name="act" enable="true">
             <javadoc xml:space="preserve">Act - do whatever the Lobster wants to do. This method is called whenever the 'Act' or 'Run' button gets pressed in the environment.</javadoc>
             <params/>
             <throws/>
             <body>
                 <call expression="moveAround()" expression-java="moveAround()" enable="true"/>
+                <call expression="eat()" expression-java="eat()" enable="true"/>
+                <if condition="isGameLost()" condition-java="isGameLost()" enable="true">
+                    <ifStatements>
+                        <call expression="transitionToGameLostWorld()" expression-java="transitionToGameLostWorld()" enable="true"/>
+                    </ifStatements>
+                </if>
             </body>
         </method>
         <method access="public" type="void" type-java="void" name="moveAround" enable="true">
@@ -40,6 +71,50 @@
                 <if condition="isAtEdge()" condition-java="isAtEdge()" enable="true">
                     <ifStatements>
                         <call expression="turn(180)" expression-java="turn(180)" enable="true"/>
+                    </ifStatements>
+                </if>
+            </body>
+        </method>
+        <method access="public" type="void" type-java="void" name="eat" enable="true">
+            <javadoc xml:space="preserve"/>
+            <params/>
+            <throws/>
+            <body>
+                <variable type="Actor" type-java="Actor" name="crab" value="getOneIntersectingObject(Crab.class)" value-java="getOneIntersectingObject(Crab.class)" enable="true"/>
+                <if condition="crab!=null" condition-java="crab != null" enable="true">
+                    <ifStatements>
+                        <variable type="World" type-java="World" name="world" value="getWorld()" value-java="getWorld()" enable="true"/>
+                        <call expression="world.removeObject(crab)" expression-java="world.removeObject(crab)" enable="true"/>
+                        <call expression="Greenfoot.playSound(&quot;bio.mp3&quot;)" expression-java="Greenfoot.playSound(&quot;bio.mp3&quot;)" enable="true"/>
+                    </ifStatements>
+                </if>
+            </body>
+        </method>
+        <method access="public" type="void" type-java="void" name="removeObject" enable="true">
+            <javadoc xml:space="preserve"/>
+            <params/>
+            <throws/>
+            <body>
+                <variable type="Actor" type-java="Actor" name="worm" value="getOneIntersectingObject(Worm.class)" value-java="getOneIntersectingObject(Worm.class)" enable="true"/>
+                <if condition="worm!=null" condition-java="worm != null" enable="true">
+                    <ifStatements>
+                        <variable type="World" type-java="World" name="world" value="getWorld()" value-java="getWorld()" enable="true"/>
+                        <call expression="world.removeObject(worm)" expression-java="world.removeObject(worm)" enable="true"/>
+                        <call expression="addLobster()" expression-java="addLobster()" enable="true"/>
+                    </ifStatements>
+                </if>
+            </body>
+        </method>
+        <method access="public" type="void" type-java="void" name="addLobster" enable="true">
+            <javadoc xml:space="preserve"/>
+            <params/>
+            <throws/>
+            <body>
+                <variable type="Actor" type-java="Actor" name="worm" value="getOneIntersectingObject(Worm.class)" value-java="getOneIntersectingObject(Worm.class)" enable="true"/>
+                <if condition="worm!=null" condition-java="worm != null" enable="true">
+                    <ifStatements>
+                        <variable type="World" type-java="World" name="world" value="getWorld()" value-java="getWorld()" enable="true"/>
+                        <call expression="world.addObject(new Lobster(),worm.getX(),worm.getY())" expression-java="world.addObject( new Lobster(), worm.getX(), worm.getY())" enable="true"/>
                     </ifStatements>
                 </if>
             </body>

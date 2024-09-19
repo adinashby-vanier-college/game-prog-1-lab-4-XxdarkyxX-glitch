@@ -17,6 +17,13 @@ public class Crab extends Actor
     {
         moveAndTurn();
         eat();
+        if (isGameWon()) {
+            transitionToGameWonWorld();
+            Greenfoot.playSound("victory.mp3");
+        }
+        if (isGameLost()) {
+            transitionToGameLostWorld();
+        }
         
     }
 
@@ -37,7 +44,7 @@ public class Crab extends Actor
     /**
      * 
      */
-    public void eat()
+    final public void eat()
     {
         Actor worm = getOneIntersectingObject(Worm.class);
         if (worm != null) {
@@ -45,5 +52,51 @@ public class Crab extends Actor
             world.removeObject(worm);
             Greenfoot.playSound("eating.wav");
         }
+    }
+
+    /**
+     * When the list of Worm objects in the world is empty, we win the game!
+     */
+    public boolean isGameWon()
+    {
+        World world = getWorld();
+        if (world.getObjects(Worm.class).isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Make the current world, the GameWonWorld!
+     */
+    public void transitionToGameWonWorld()
+    {
+        World gameWonWorld =  new  GameWonWorld();
+        Greenfoot.setWorld(gameWonWorld);
+    }
+
+    /**
+     * When the list of Worm objects in the world is empty, we win the game!
+     */
+    public boolean isGameLost()
+    {
+        World world = getWorld();
+        if (world.getObjects(Crab.class).isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Make the current world, the GameWonWorld!
+     */
+    public void transitionToGameLostWorld()
+    {
+        World gameLostWorld =  new  GameLostWorld();
+        Greenfoot.setWorld(gameLostWorld);
     }
 }
